@@ -1,48 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Lenormand Grand Tableau Spread Generator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lenormand Grand Tableau Spread</title>
   <style>
-    table {
-      border-collapse: collapse;
+    body {
+      font-family: Arial, sans-serif;
     }
-    td {
-      border: 1px solid black;
-      padding: 5px;
+
+    .card {
+      width: 100px;
+      height: 150px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+      margin: 10px;
+      display: inline-block;
       text-align: center;
+      line-height: 150px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.1);
+    }
+
+    #questionInput {
+      width: 300px;
+      padding: 10px;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    #submitQuestion {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #submittedQuestion {
+      margin-top: 20px;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
-  <h1>Lenormand Grand Tableau Spread Generator</h1>
-  <button onclick="generateSpread()">Generate Spread</button>
-  <br><br>
-  <table id="mainSpread"></table>
-  <br>
-  <table id="additionalSpread"></table>
+  <h1>Lenormand Grand Tableau Spread</h1>
+  <label for="layoutSelect">Select Layout:</label>
+  <select id="layoutSelect">
+    <option value="4x9">4x9</option>
+    <option value="4x8+4">4x8 + 4</option>
+  </select>
+  <button onclick="shuffleCards()">Shuffle Cards</button>
+  <div id="cardContainer"></div>
+  
+  <input type="text" id="questionInput" placeholder="Enter your question...">
+  <button id="submitQuestion">Submit Question</button>
+  <div id="submittedQuestion"></div>
 
   <script>
-    const words = ["Rider", "Clover", "Ship", "House", "Tree", "Clouds", "Snake", "Coffin", "Bouquet", "Scythe", "Whip", "Birds", "Child", "Fox", "Bear", "Stars", "Stork", "Dog", "Tower", "Garden", "Mountain", "Crossroads", "Mice", "Heart", "Ring", "Book", "Letter", "Man", "Woman", "Lily", "Sun", "Moon", "Key", "Fish", "Anchor", "Cross"];
+    const cards = ["Rider", "Clover", "Ship", "House", "Tree", "Clouds", "Snake", "Coffin", "Bouquet", "Scythe", "Whip", "Birds", "Child", "Fox", "Bear", "Stars", "Stork", "Dog", "Tower", "Garden", "Mountain", "Crossroads", "Mice", "Heart", "Ring", "Book", "Letter", "Man", "Woman", "Lily", "Sun", "Moon", "Key", "Fish", "Anchor", "Cross"];
 
-    function generateSpread() {
-      const shuffledWords = shuffle(words);
-      
-      const mainSpread = document.getElementById("mainSpread");
-      mainSpread.innerHTML = "";
-      for (let i = 0; i < 4; i++) {
-        const row = mainSpread.insertRow();
-        for (let j = 0; j < 8; j++) {
-          const cell = row.insertCell();
-          cell.innerHTML = shuffledWords[i * 8 + j];
+    function shuffleCards() {
+      const selectedLayout = document.getElementById("layoutSelect").value;
+      const [rowCount, columnCount] = selectedLayout === "4x9" ? [4, 9] : [4, 8];
+      const shuffledCards = shuffle(cards);
+      const cardContainer = document.getElementById("cardContainer");
+      cardContainer.innerHTML = "";
+      for (let i = 0; i < rowCount; i++) {
+        const row = document.createElement("div");
+        row.classList.add("row");
+        for (let j = 0; j < columnCount; j++) {
+          const index = i * columnCount + j;
+          const div = document.createElement("div");
+          div.classList.add("card");
+          div.textContent = shuffledCards[index];
+          div.addEventListener("click", () => revealCard(shuffledCards[index]));
+          row.appendChild(div);
         }
-      }
-
-      const additionalSpread = document.getElementById("additionalSpread");
-      additionalSpread.innerHTML = "";
-      const row = additionalSpread.insertRow();
-      for (let i = 0; i < 4; i++) {
-        const cell = row.insertCell();
-        cell.innerHTML = shuffledWords[32 + i];
+        cardContainer.appendChild(row);
       }
     }
 
@@ -54,6 +100,17 @@
       }
       return shuffledArray;
     }
+
+    function revealCard(card) {
+      alert(`The card you selected is: ${card}`);
+    }
+
+    document.getElementById("submitQuestion").addEventListener("click", function() {
+      const questionInput = document.getElementById("questionInput");
+      const submittedQuestion = document.getElementById("submittedQuestion");
+      submittedQuestion.textContent = `Your question: ${questionInput.value}`;
+      questionInput.value = ""; // Clear the input field after submission
+    });
   </script>
 </body>
 </html>
