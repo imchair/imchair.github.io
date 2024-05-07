@@ -58,7 +58,7 @@
       transform: scale(1.1);
     }
 
-    #questionInput, #submitQuestion {
+    #questionInput, #submitQuestion, #copyButton {
       display: block;
       margin: 10px auto;
       width: 90%;
@@ -75,7 +75,13 @@
       cursor: pointer;
     }
 
-    #submittedQuestion {
+    #copyButton {
+      background-color: #28a745;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    #submittedQuestion, #shuffledResult {
       text-align: center;
       margin-top: 20px;
       font-size: 18px;
@@ -91,7 +97,7 @@
         margin: 3px;  /* 모바일에서 간격을 최소화합니다. */
       }
 
-      #questionInput, #submitQuestion {
+      #questionInput, #submitQuestion, #copyButton {
         max-width: 250px;  /* 입력 필드 및 버튼의 최대 너비를 줄입니다. */
       }
     }
@@ -113,13 +119,17 @@
   <input type="text" id="questionInput" placeholder="Enter your question...">
   <button id="submitQuestion">Submit Question</button>
   <div id="submittedQuestion"></div>
+  
+  <div id="shuffledResult"></div>
+  <button id="copyButton" onclick="copyToClipboard()">Copy Shuffle Result</button>
 
   <script>
     const cards = ["Rider", "Clover", "Ship", "House", "Tree", "Clouds", "Snake", "Coffin", "Bouquet", "Scythe", "Whip", "Birds", "Child", "Fox", "Bear", "Stars", "Stork", "Dog", "Tower", "Garden", "Mountain", "Crossroads", "Mice", "Heart", "Ring", "Book", "Letter", "Man", "Woman", "Lily", "Sun", "Moon", "Key", "Fish", "Anchor", "Cross"];
+    let shuffledCards = [];
 
     function shuffleCards() {
       const selectedLayout = document.getElementById("layoutSelect").value;
-      const shuffledCards = shuffle(cards);
+      shuffledCards = shuffle(cards);
       const cardContainer = document.getElementById("cardContainer");
       cardContainer.innerHTML = "";
 
@@ -129,6 +139,8 @@
         createRows(shuffledCards, 4, 8);
         createLastRow(shuffledCards.slice(32, 36));
       }
+
+      displayShuffledResult();
     }
 
     function createRows(cards, rowCount, columnCount) {
@@ -171,6 +183,18 @@
 
     function revealCard(card) {
       alert(`The card you selected is: ${card}`);
+    }
+
+    function displayShuffledResult() {
+      const shuffledResultDiv = document.getElementById("shuffledResult");
+      shuffledResultDiv.textContent = `Shuffled Cards: ${shuffledCards.join(", ")}`;
+    }
+
+    function copyToClipboard() {
+      const shuffledResultText = `Shuffled Cards: ${shuffledCards.join(", ")}`;
+      navigator.clipboard.writeText(shuffledResultText).then(() => {
+        alert("Shuffle result copied to clipboard!");
+      });
     }
 
     document.getElementById("submitQuestion").addEventListener("click", function() {
