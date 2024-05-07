@@ -1,26 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lenormand Grand Tableau Spread</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #controlContainer {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    #cardContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .row {
+      display: flex;
+    }
+
+    .row-last {
+      display: flex;
+      justify-content: center;
     }
 
     .card {
-      width: 100px;
-      height: 150px;
+      width: 80px;
+      height: 120px;
       border: 1px solid #ccc;
       border-radius: 5px;
       background-color: #fff;
-      margin: 10px;
-      display: inline-block;
+      margin: 5px;  /* 간격을 최소화합니다. */
       text-align: center;
-      line-height: 150px;
-      font-size: 20px;
+      line-height: 120px;
+      font-size: 14px;
       cursor: pointer;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
       transition: transform 0.3s ease;
     }
 
@@ -28,40 +58,55 @@
       transform: scale(1.1);
     }
 
-    #questionInput {
-      width: 300px;
+    #questionInput, #submitQuestion {
+      display: block;
+      margin: 10px auto;
+      width: 90%;
+      max-width: 300px;
       padding: 10px;
-      margin-top: 20px;
       border: 1px solid #ccc;
       border-radius: 5px;
       font-size: 16px;
     }
 
     #submitQuestion {
-      margin-top: 10px;
-      padding: 10px 20px;
       background-color: #007bff;
       color: #fff;
-      border: none;
-      border-radius: 5px;
       cursor: pointer;
-      font-size: 16px;
     }
 
     #submittedQuestion {
+      text-align: center;
       margin-top: 20px;
       font-size: 18px;
     }
+
+    /* 미디어 쿼리: 화면 너비가 600px 이하일 때 적용할 스타일 */
+    @media (max-width: 600px) {
+      .card {
+        width: 60px;  /* 카드의 너비를 60px로 줄입니다. */
+        height: 90px;  /* 카드의 높이를 90px로 줄입니다. */
+        font-size: 12px;  /* 카드 안의 글자 크기를 줄입니다. */
+        line-height: 90px;  /* 글자를 카드 중앙에 위치시키기 위해 높이와 일치시킵니다. */
+      }
+
+      #questionInput, #submitQuestion {
+        max-width: 250px;  /* 입력 필드 및 버튼의 최대 너비를 줄입니다. */
+      }
+    }
+
   </style>
 </head>
 <body>
   <h1>Lenormand Grand Tableau Spread</h1>
-  <label for="layoutSelect">Select Layout:</label>
-  <select id="layoutSelect">
-    <option value="4x9">4x9</option>
-    <option value="4x8+4">4x8 + 4</option>
-  </select>
-  <button onclick="shuffleCards()">Shuffle Cards</button>
+  <div id="controlContainer">
+    <label for="layoutSelect">Select Layout:</label>
+    <select id="layoutSelect">
+      <option value="4x9">4x9</option>
+      <option value="4x8+4">4x8 + 4</option>
+    </select>
+    <button onclick="shuffleCards()">Shuffle Cards</button>
+  </div>
   <div id="cardContainer"></div>
   
   <input type="text" id="questionInput" placeholder="Enter your question...">
@@ -73,10 +118,19 @@
 
     function shuffleCards() {
       const selectedLayout = document.getElementById("layoutSelect").value;
-      const [rowCount, columnCount] = selectedLayout === "4x9" ? [4, 9] : [4, 8];
       const shuffledCards = shuffle(cards);
       const cardContainer = document.getElementById("cardContainer");
       cardContainer.innerHTML = "";
+
+      if (selectedLayout === "4x9") {
+        createRows(shuffledCards, 4, 9);
+      } else {
+        createRows(shuffledCards, 4, 8);
+        createLastRow(shuffledCards.slice(32, 36));
+      }
+    }
+
+    function createRows(cards, rowCount, columnCount) {
       for (let i = 0; i < rowCount; i++) {
         const row = document.createElement("div");
         row.classList.add("row");
@@ -84,12 +138,25 @@
           const index = i * columnCount + j;
           const div = document.createElement("div");
           div.classList.add("card");
-          div.textContent = shuffledCards[index];
-          div.addEventListener("click", () => revealCard(shuffledCards[index]));
+          div.textContent = cards[index];
+          div.addEventListener("click", () => revealCard(cards[index]));
           row.appendChild(div);
         }
-        cardContainer.appendChild(row);
+        document.getElementById("cardContainer").appendChild(row);
       }
+    }
+
+    function createLastRow(cards) {
+      const lastRow = document.createElement("div");
+      lastRow.classList.add("row-last");
+      cards.forEach(card => {
+        const div = document.createElement("div");
+        div.classList.add("card");
+        div.textContent = card;
+        div.addEventListener("click", () => revealCard(card));
+        lastRow.appendChild(div);
+      });
+      document.getElementById("cardContainer").appendChild(lastRow);
     }
 
     function shuffle(array) {
