@@ -10,7 +10,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      overflow-x: hidden;  /* 모바일에서 수평 스크롤이 생기는 문제 해결 */
+      overflow-x: hidden;  /* 모바일에서 수평 스크롤 문제 해결 */
     }
 
     h1 {
@@ -33,7 +33,7 @@
     .row, .row-last {
       display: flex;
       justify-content: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;  /* 한 행에 모든 카드가 나타나도록 설정 */
       max-width: 100%;
     }
 
