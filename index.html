@@ -10,6 +10,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      overflow-x: hidden;  /* 모바일에서 수평 스크롤이 생기는 문제 해결 */
     }
 
     h1 {
@@ -26,15 +27,14 @@
       flex-direction: column;
       align-items: center;
       margin: 20px 0;
+      overflow-x: auto;
     }
 
-    .row {
-      display: flex;
-    }
-
-    .row-last {
+    .row, .row-last {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
+      max-width: 100%;
     }
 
     .card {
@@ -88,6 +88,7 @@
         height: 90px;  /* 카드의 높이를 90px로 줄입니다. */
         font-size: 12px;  /* 카드 안의 글자 크기를 줄입니다. */
         line-height: 90px;  /* 글자를 카드 중앙에 위치시키기 위해 높이와 일치시킵니다. */
+        margin: 3px;  /* 모바일에서 간격을 최소화합니다. */
       }
 
       #questionInput, #submitQuestion {
